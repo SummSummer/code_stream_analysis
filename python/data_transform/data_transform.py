@@ -23,5 +23,6 @@ class DataTransmission:
         return lib.get_python_input(code_stream, struct_str)
 
 
+# 调用方法 run_cpp('1.so', '123', 'abc')
 def run_cpp(cpp_so_path: str, code_stream: str, struct_str: str) -> bytes:
     return DataTransmission(cpp_so_path, code_stream, struct_str).run_cpp()
