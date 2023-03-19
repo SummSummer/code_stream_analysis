@@ -1,0 +1,3 @@
+# 默认忽略的文件
+/python/.idea
+/python/data_transform/__pycache__
