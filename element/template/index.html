@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>码流解析</title>
+    <!--引入vue.js-->
+    <script src="../static/js/vue.js"></script>
+
+    <!--引入 element js css-->
+    <link rel="stylesheet" href="../static/element-ui/lib/theme-chalk/index.css">
+    <script src="../static/element-ui/lib/index.js"></script>
+    <script src="../static/js/axios-0.18.0.js"></script>
+    <style>
+        .el-form {
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+        <el-menu-item index="1" style="font-size:25px">码流解析小工具</el-menu-item>
+    </el-menu>
+    <div><br></div>
+    <el-form :label-position="labelPosition" label-width="100px" :model="userInput">
+        <br>
+        <el-form-item label="码流">
+            <el-input
+                    type="textarea"
+                    autosize
+                    placeholder="请输入内容"
+                    v-model="userInput.code_stream">
+            </el-input>
+        </el-form-item>
+        <el-form-item label="结构体">
+            <el-input
+                    type="textarea"
+                    autosize
+                    placeholder="请输入内容"
+                    v-model="userInput.struct_str">
+            </el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-radio v-model="userInput.littleOrBig" label="1" border size="medium">小端序</el-radio>
+            <el-radio v-model="userInput.littleOrBig" label="2" border size="medium">大端序</el-radio>
+            <el-button type="primary" @click="onSubmit">计算</el-button>
+        </el-form-item>
+        <br>
+    </el-form>
+    <br><br>
+    <template>
+        <el-table
+                :data="tableData"
+                style="width: 100%">
+            <el-table-column
+                    prop="name"
+                    label="变量名"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="value"
+                    label="数值"
+                    width="180">
+            </el-table-column>
+        </el-table>
+    </template>
+</div>
+
+<script>
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                activeIndex: '1',
+                labelPosition: 'right',
+                userInput: {
+                    code_stream: '',
+                    struct_str: '',
+                    littleOrBig: '1',
+                },
+                tableData: [
+                    {
+                        name: 'Tom',
+                        value: '123'
+                    },
+                ]
+            };
+        },
+        methods: {
+            open1() {
+                this.$message({
+                message: '码流解析成功',
+                type: 'success'
+                });
+            },
+            open2() {
+                this.$message.error('码流解析失败');
+            },
+            onSubmit() {
+                var _this = this
+                axios({
+                    method: "POST",
+                    url: "http://127.0.0.1:8080",
+                    data: _this.userInput
+                }).then(function (resp) {
+                    if (resp.data['result'] === 'success')
+                    {
+                        _this.open1();
+                        _this.tableData = resp.data['data']
+                    }
+                    else
+                    {
+                        _this.open2();
+                    }
+                    console.log(resp.data)
+                })
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
